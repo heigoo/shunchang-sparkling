@@ -1,0 +1,87 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.shunchang.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.shunchang.app'
+        minSdk 24
+        targetSdk 34
+        versionCode 2
+        versionName '2.0'
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// 每次构建前，把 ReactLynx 的最新产物同步进 assets。
+tasks.register('syncLynxBundle', Copy) {
+    from rootProject.file('../shunchang/dist')
+    include 'main.lynx.bundle'
+    into 'src/main/assets'
+}
+
+preBuild.dependsOn syncLynxBundle
+
+// Sparkling 2.0.1 默认带 Lynx 3.6.0，但当前 ReactLynx bundle 在 4.2 上验证过，
+// 这里强制对齐到 4.2，避免 input 等元件行为不一致。
+configurations.all {
+    def forced = [
+            'lynx'                : '4.2.0',
+            'lynx-jssdk'          : '4.2.0',
+            'lynx-trace'          : '4.2.0',
+            'lynx-devtool'        : '4.2.0',
+            'lynx-service-image'  : '4.2.0',
+            'lynx-service-log'    : '4.2.0',
+            'lynx-service-http'   : '4.2.0',
+            'lynx-service-devtool': '4.2.0',
+            'xelement-input'      : '4.2.0',
+            'xelement-svg'        : '4.2.0',
+            'xelement-blur-view'  : '4.2.0',
+            'primjs'              : '4.2.1',
+            'primjsWasm'          : '4.2.1',
+    ]
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.lynxsdk.lynx' && forced.containsKey(details.requested.name)) {
+            details.useVersion forced[details.requested.name]
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.tiktok.sparkling:sparkling:2.0.1'
+    // 官方 sparkling-storage 的 Android 实现（源码来自 npm 包）。
+    implementation project(':sparkling-storage')
+    // 返回键接管需要 AppCompat / Activity 的 OnBackPressedDispatcher。
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    // Lynx 图片服务依赖 Fresco，但未在 POM 中声明。
+    implementation 'com.facebook.fresco:fresco:2.3.0'
+    // Lynx HTTP 服务依赖 OkHttp，但未在 POM 中声明。
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation('org.lynxsdk.lynx:xelement-input:4.2.0') {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
+    }
+    implementation('org.lynxsdk.lynx:xelement-svg:4.2.0') {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
+    }
+    // 原生背景模糊（玻璃浮层）依赖 blur-view 元件。
+    implementation 'org.lynxsdk.lynx:xelement-blur-view:4.2.0'
+}

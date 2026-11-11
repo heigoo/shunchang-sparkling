@@ -1,0 +1,3 @@
+rootProject.name = 'shunchang-sparkling'
+include ':app'
+include ':sparkling-storage'

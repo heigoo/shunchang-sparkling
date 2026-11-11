@@ -1,0 +1,17 @@
+buildscript {
+    repositories {
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.6.1'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24'
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        mavenCentral()
+    }
+}

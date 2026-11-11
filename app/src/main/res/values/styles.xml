@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ShunchangTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">#FFFFFFFF</item>
-        <item name="android:statusBarColor">#FFFFFFFF</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">#FFFFFFFF</item>
-        <item name="android:windowLightNavigationBar">true</item>
+    <!-- 启动窗口与 Lynx 启动页同底色，避免首帧闪白。 -->
+    <style name="ShunchangTheme" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
-    <!-- 覆盖 Sparkling 容器默认的黑色状态栏，保持与页面一致的浅色外观。 -->
+    <!-- Sparkling 容器主题：暗底透明系统栏，内容延伸到状态栏与导航栏下方。 -->
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">#FFFFFFFF</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">#FFFFFFFF</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
-    <color name="colorPrimaryDark">#FFFFFFFF</color>
+    <color name="colorPrimaryDark">#0B0B09</color>
 </resources>

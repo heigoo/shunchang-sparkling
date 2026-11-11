@@ -2,17 +2,22 @@ package com.shunchang.app;
 
 import android.app.Activity;
 import android.app.Application;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowInsets;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.appcompat.view.WindowCallbackWrapper;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.lynx.react.bridge.JavaOnlyArray;
+import com.lynx.react.bridge.JavaOnlyMap;
 import com.lynx.tasm.LynxView;
 import com.tiktok.sparkling.SparklingActivity;
 import com.tiktok.sparkling.hybridkit.HybridKit;
@@ -33,6 +38,8 @@ import kotlin.Unit;
 
 public class SparklingApp extends Application {
     private final WeakHashMap<Activity, Boolean> predictiveBackRegistered = new WeakHashMap<>();
+    /** 记住当前系统栏图标明暗，避免 Activity 恢复时闪一下。 */
+    private static Boolean lastLightIcons = null;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -89,6 +96,7 @@ public class SparklingApp extends Application {
                 }
                 SparklingActivity sparkling = (SparklingActivity) activity;
                 BackHostModule.setCurrentActivity(sparkling);
+                applyEdgeToEdge(sparkling);
                 Window window = sparkling.getWindow();
                 Window.Callback callback = window.getCallback();
                 if (callback != null && !(callback instanceof BackWindowCallback)) {
@@ -139,6 +147,60 @@ public class SparklingApp extends Application {
                 });
     }
 
+    /** 内容铺到状态栏与导航栏下方，系统栏透明，图标颜色由页面主题决定。 */
+    private void applyEdgeToEdge(Activity activity) {
+        Window window = activity.getWindow();
+        WindowCompat.setDecorFitsSystemWindows(window, false);
+        window.setStatusBarColor(Color.TRANSPARENT);
+        window.setNavigationBarColor(Color.TRANSPARENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.setStatusBarContrastEnforced(false);
+            window.setNavigationBarContrastEnforced(false);
+        }
+        setBarsAppearance(activity, lastLightIcons == null ? true : lastLightIcons);
+        window.getDecorView().postDelayed(() -> sendInsetsToLynx(activity), 300);
+    }
+
+    /** lightIcons=true 用于暗色页面（浅色图标），false 用于浅色页面。 */
+    static void setBarsAppearance(Activity activity, boolean lightIcons) {
+        lastLightIcons = lightIcons;
+        Window window = activity.getWindow();
+        WindowInsetsControllerCompat controller =
+                WindowCompat.getInsetsController(window, window.getDecorView());
+        controller.setAppearanceLightStatusBars(!lightIcons);
+        controller.setAppearanceLightNavigationBars(!lightIcons);
+    }
+
+    /** 把状态栏、导航栏高度（dp）发给 Lynx，页面据此留出安全区。 */
+    static void sendInsetsToLynx(Activity activity) {
+        LynxView lynxView = findLynxView(activity.getWindow().getDecorView());
+        if (lynxView == null) {
+            return;
+        }
+        WindowInsets insets =
+                activity.getWindow().getDecorView().getRootWindowInsets();
+        float density = activity.getResources().getDisplayMetrics().density;
+        int top = 0;
+        int bottom = 0;
+        if (insets != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                android.graphics.Insets bars =
+                        insets.getInsets(WindowInsets.Type.systemBars());
+                top = bars.top;
+                bottom = bars.bottom;
+            } else {
+                top = insets.getSystemWindowInsetTop();
+                bottom = insets.getSystemWindowInsetBottom();
+            }
+        }
+        JavaOnlyMap map = new JavaOnlyMap();
+        map.putDouble("top", top / density);
+        map.putDouble("bottom", bottom / density);
+        JavaOnlyArray params = new JavaOnlyArray();
+        params.pushMap(map);
+        lynxView.sendGlobalEvent("shunchang:insets", params);
+    }
+
     private static final class BackWindowCallback extends WindowCallbackWrapper {
         private final SparklingActivity activity;
 
@@ -164,7 +226,7 @@ public class SparklingApp extends Application {
         }
     }
 
-    private static LynxView findLynxView(View view) {
+    static LynxView findLynxView(View view) {
         if (view instanceof LynxView) {
             return (LynxView) view;
         }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 系统启动页图标：与品牌标记一致的两块琥珀色横条 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFB020"
+        android:pathData="M20,44 h42 v9 h-42 z" />
+    <path
+        android:fillColor="#A66A12"
+        android:pathData="M20,53 h42 v2 h-42 z" />
+    <path
+        android:fillColor="#FFB020"
+        android:pathData="M48,57 h40 v9 h-40 z" />
+    <path
+        android:fillColor="#A66A12"
+        android:pathData="M48,66 h40 v2 h-40 z" />
+</vector>

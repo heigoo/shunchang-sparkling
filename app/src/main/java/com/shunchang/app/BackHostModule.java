@@ -39,4 +39,25 @@ public class BackHostModule extends LynxModule {
     public void showExitHint() {
         Toast.makeText(mContext, "再按一次退出", Toast.LENGTH_SHORT).show();
     }
+
+    /** JS 根据当前页面主题切换状态栏 / 导航栏图标明暗。 */
+    @LynxMethod
+    public void setBarsStyle(String style) {
+        Activity activity = currentActivity.get();
+        if (activity == null) {
+            return;
+        }
+        activity.runOnUiThread(
+                () -> SparklingApp.setBarsAppearance(activity, "dark".equals(style)));
+    }
+
+    /** 页面挂载后主动拉取一次系统栏高度。 */
+    @LynxMethod
+    public void requestInsets() {
+        Activity activity = currentActivity.get();
+        if (activity == null) {
+            return;
+        }
+        activity.runOnUiThread(() -> SparklingApp.sendInsetsToLynx(activity));
+    }
 }

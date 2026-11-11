@@ -16,13 +16,40 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
+            android:exported="false"
+            android:theme="@style/ShunchangTheme" />
+
+        <!-- 默认墨金主题的桌面入口 -->
+        <activity-alias
+            android:name=".LauncherDefault"
+            android:targetActivity=".MainActivity"
             android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:label="顺场"
+            android:enabled="true"
             android:theme="@style/ShunchangTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
+
+        <!-- 喜事主题的桌面入口：切换主题时与默认入口互斥启用 -->
+        <activity-alias
+            android:name=".LauncherXishi"
+            android:targetActivity=".MainActivity"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_xishi"
+            android:roundIcon="@mipmap/ic_launcher_xishi_round"
+            android:label="顺场"
+            android:enabled="false"
+            android:theme="@style/ShunchangThemeXishi">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
     </application>
 
 </manifest>

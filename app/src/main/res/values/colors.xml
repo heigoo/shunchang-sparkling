@@ -2,4 +2,6 @@
 <resources>
     <color name="ic_launcher_background">#0B0B09</color>
     <color name="splash_background">#0B0B09</color>
+    <!-- 喜事主题：喜红底，与喜事启动页一致 -->
+    <color name="splash_background_xishi">#BE2A20</color>
 </resources>

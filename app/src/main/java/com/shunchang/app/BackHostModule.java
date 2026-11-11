@@ -60,4 +60,10 @@ public class BackHostModule extends LynxModule {
         }
         activity.runOnUiThread(() -> SparklingApp.sendInsetsToLynx(activity));
     }
+
+    /** JS 切换喜事 / 默认主题时同步更换桌面图标。 */
+    @LynxMethod
+    public void applyLauncherTheme(String theme) {
+        LauncherTheme.apply(mContext, theme);
+    }
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_xishi_bg" />
+    <foreground android:drawable="@drawable/shunchang_xishi_foreground" />
+    <monochrome android:drawable="@drawable/shunchang_xishi_monochrome" />
+</adaptive-icon>

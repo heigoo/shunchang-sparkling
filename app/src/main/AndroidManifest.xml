@@ -17,6 +17,7 @@
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/ShunchangTheme" />
 
         <!-- 默认墨金主题的桌面入口 -->

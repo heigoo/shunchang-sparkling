@@ -13,7 +13,9 @@ import android.view.WindowInsets;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.appcompat.view.WindowCallbackWrapper;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.lynx.react.bridge.JavaOnlyArray;
@@ -158,7 +160,30 @@ public class SparklingApp extends Application {
             window.setNavigationBarContrastEnforced(false);
         }
         setBarsAppearance(activity, lastLightIcons == null ? true : lastLightIcons);
+        ViewCompat.setOnApplyWindowInsetsListener(
+                window.getDecorView(),
+                (view, insets) -> {
+                    int imeBottom =
+                            insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+                    float density =
+                            view.getResources().getDisplayMetrics().density;
+                    sendImeToLynx(activity, imeBottom / density);
+                    return insets;
+                });
         window.getDecorView().postDelayed(() -> sendInsetsToLynx(activity), 300);
+    }
+
+    /** 软键盘高度（dp）发给 Lynx，载入面板据此避让。 */
+    static void sendImeToLynx(Activity activity, float bottomDp) {
+        LynxView lynxView = findLynxView(activity.getWindow().getDecorView());
+        if (lynxView == null) {
+            return;
+        }
+        JavaOnlyMap map = new JavaOnlyMap();
+        map.putDouble("bottom", Math.max(0, bottomDp));
+        JavaOnlyArray params = new JavaOnlyArray();
+        params.pushMap(map);
+        lynxView.sendGlobalEvent("shunchang:ime", params);
     }
 
     /** lightIcons=true 用于暗色页面（浅色图标），false 用于浅色页面。 */

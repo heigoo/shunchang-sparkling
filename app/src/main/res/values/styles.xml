@@ -33,5 +33,13 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
+    <!-- 文件选择代理页：不绘制界面，只承接 Activity 结果。 -->
+    <style name="HostActionTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
     <color name="colorPrimaryDark">#0B0B09</color>
 </resources>

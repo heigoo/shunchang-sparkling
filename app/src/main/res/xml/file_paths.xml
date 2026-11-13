@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 导出的 JSON / HTML 先写到应用缓存，再通过 FileProvider 分享。 -->
+    <cache-path name="exports" path="exports/" />
+</paths>

@@ -20,6 +20,25 @@
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/ShunchangTheme" />
 
+        <!-- 文件导入 / 另存为的透明代理页，承接系统文件选择器的返回结果 -->
+        <activity
+            android:name=".HostFileActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/HostActionTheme" />
+
+        <!-- 导出文件通过 FileProvider 交给系统分享面板 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- 默认墨金主题的桌面入口 -->
         <activity-alias
             android:name=".LauncherDefault"

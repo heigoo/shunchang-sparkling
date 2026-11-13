@@ -96,6 +96,22 @@ public class BackHostModule extends LynxModule {
         LauncherTheme.apply(mContext, theme);
     }
 
+    /** 用系统浏览器打开外部链接（使用说明书、官网等）。 */
+    @LynxMethod
+    public void openUrl(String url) {
+        Activity activity = currentActivity.get();
+        if (activity == null || url == null || url.length() == 0) {
+            return;
+        }
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activity.startActivity(intent);
+        } catch (Exception ignored) {
+            // 设备没有可处理该链接的浏览器时静默失败，前端会退回复制链接。
+        }
+    }
+
     // ---------- 文件 ----------
 
     /** 调起系统文件选择器；结果通过 shunchang:pickedJson 事件回传。 */
